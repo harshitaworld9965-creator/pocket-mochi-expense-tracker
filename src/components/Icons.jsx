@@ -64,8 +64,17 @@ export function MoodIcon({ mood, size = 24 }) {
   return <Svg size={size}>{moodPaths[mood] ?? moodPaths.other}</Svg>
 }
 
+export const HomeIcon = () => <Svg size={22}>{moodPaths.home}</Svg>
+export const CalendarIcon = () => <Svg size={22}>{moodPaths.bills}</Svg>
+
+export const ChartIcon = () => (
+  <Svg size={22}>
+    <path d="M5 20V11M12 20V5M19 20v-8" />
+  </Svg>
+)
+
 export const PlusIcon = () => (
-  <Svg size={22} strokeWidth={2.6}>
+  <Svg size={24} strokeWidth={2.8}>
     <path d="M12 5v14M5 12h14" />
   </Svg>
 )
@@ -73,6 +82,18 @@ export const PlusIcon = () => (
 export const BackIcon = () => (
   <Svg size={22} strokeWidth={2.6}>
     <path d="M15 6l-6 6 6 6" />
+  </Svg>
+)
+
+export const NextIcon = () => (
+  <Svg size={22} strokeWidth={2.6}>
+    <path d="M9 6l6 6-6 6" />
+  </Svg>
+)
+
+export const PencilIcon = () => (
+  <Svg size={16} strokeWidth={2.4}>
+    <path d="M4 20l4-1L19 8l-3-3L5 16z" />
   </Svg>
 )
 

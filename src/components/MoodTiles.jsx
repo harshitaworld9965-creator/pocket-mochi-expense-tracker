@@ -1,13 +1,11 @@
 import { MOODS } from '../supabase'
-import { shortRupees } from '../utils'
+import { shortRupees, sumAmounts } from '../utils'
 import { MoodIcon } from './Icons'
 
 export default function MoodTiles({ expenses }) {
   const totals = MOODS.map((m) => ({
     ...m,
-    total: expenses
-      .filter((e) => e.mood === m.id)
-      .reduce((sum, e) => sum + Number(e.amount), 0),
+    total: sumAmounts(expenses.filter((e) => e.mood === m.id)),
   }))
 
   // show the 4 moods you spent the most on

@@ -1,11 +1,19 @@
 // Dates are stored as 'YYYY-MM-DD'. 'en-CA' formats a local date in exactly that shape.
-const iso = (d) => d.toLocaleDateString('en-CA')
+export const iso = (d) => d.toLocaleDateString('en-CA')
 
 export const todayISO = () => iso(new Date())
 
-export function monthStartISO() {
+// month is 0–11, like JavaScript's Date. `to` is the first day of the NEXT month.
+export function monthRange(year, month) {
+  return {
+    from: iso(new Date(year, month, 1)),
+    to: iso(new Date(year, month + 1, 1)),
+  }
+}
+
+export function currentMonthRange() {
   const d = new Date()
-  return iso(new Date(d.getFullYear(), d.getMonth(), 1))
+  return monthRange(d.getFullYear(), d.getMonth())
 }
 
 export function daysLeftInMonth() {
@@ -17,6 +25,12 @@ export function daysLeftInMonth() {
 export const monthName = () =>
   new Date().toLocaleDateString('en-IN', { month: 'long' }).toLowerCase()
 
+export const monthLabel = (year, month) =>
+  new Date(year, month, 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }).toLowerCase()
+
+export const shortMonth = (year, month) =>
+  new Date(year, month, 1).toLocaleDateString('en-IN', { month: 'short' }).toLowerCase()
+
 const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 })
 export const rupees = (n) => '₹' + inr.format(n)
 
@@ -25,13 +39,15 @@ export function shortRupees(n) {
   return '₹' + (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
 }
 
+export const sumAmounts = (list) => list.reduce((sum, e) => sum + Number(e.amount), 0)
+
 export function dayLabel(dateISO) {
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
   if (dateISO === todayISO()) return 'today'
   if (dateISO === iso(yesterday)) return 'yesterday'
   const [y, m, d] = dateISO.split('-').map(Number)
-  return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+  return new Date(y, m - 1, d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }).toLowerCase()
 }
 
 export function greeting() {

@@ -10,6 +10,7 @@ if (!url || !key) {
 export const supabase = createClient(url, key)
 
 export const TABLE = 'mochi_expenses'
+export const SETTINGS_TABLE = 'mochi_settings'
 
 export const MOODS = [
   { id: 'food',     label: 'food',     color: '#ffd6e0' },
@@ -22,4 +23,5 @@ export const MOODS = [
   { id: 'other',    label: 'other',    color: '#ffe9a8' },
 ]
 
-export const MONTHLY_BUDGET = 15000
+// used until the saved budget loads, or if it can't be loaded
+export const DEFAULT_BUDGET = 15000

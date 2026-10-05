@@ -1,10 +1,26 @@
-import { MONTHLY_BUDGET } from '../supabase'
+import { useState } from 'react'
 import { rupees, daysLeftInMonth, monthName } from '../utils'
+import { PencilIcon } from './Icons'
 
-export default function TotalCard({ total }) {
-  const pct = Math.round((total / MONTHLY_BUDGET) * 100)
-  const over = total > MONTHLY_BUDGET
+export default function TotalCard({ total, budget, onBudgetChange }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+
+  const pct = Math.round((total / budget) * 100)
+  const over = total > budget
   const left = daysLeftInMonth()
+
+  function startEditing() {
+    setDraft(String(budget))
+    setEditing(true)
+  }
+
+  function handleSave(e) {
+    e.preventDefault()
+    const value = Math.round(Number(draft))
+    if (value > 0 && value !== budget) onBudgetChange(value)
+    setEditing(false)
+  }
 
   return (
     <section className="total sticker" aria-label="this month's total">
@@ -19,9 +35,35 @@ export default function TotalCard({ total }) {
 
       <div>
         <div className="budget-meta">
-          <span>budget {rupees(MONTHLY_BUDGET)}</span>
-          <span>{over ? `over by ${rupees(total - MONTHLY_BUDGET)}` : `${pct}% used`}</span>
+          {editing ? (
+            <form className="budget-form" onSubmit={handleSave}>
+              <label htmlFor="budget">budget ₹</label>
+              <input
+                id="budget"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                autoFocus
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => e.key === 'Escape' && setEditing(false)}
+              />
+              <button type="submit" className="mini-btn">save</button>
+              <button type="button" className="mini-btn ghost" onClick={() => setEditing(false)}>
+                cancel
+              </button>
+            </form>
+          ) : (
+            <button className="budget-edit" onClick={startEditing} aria-label={`budget ${rupees(budget)}, edit`}>
+              budget {rupees(budget)}
+              <PencilIcon />
+            </button>
+          )}
+          {!editing && (
+            <span>{over ? `over by ${rupees(total - budget)}` : `${pct}% used`}</span>
+          )}
         </div>
+
         <div
           className="bar"
           role="progressbar"
