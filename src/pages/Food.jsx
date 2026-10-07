@@ -6,6 +6,8 @@ import CalorieCard from '../components/CalorieCard'
 import WeekStrip from '../components/WeekStrip'
 import AddMeal from '../components/AddMeal'
 import { MealIcon, BackIcon, NextIcon, TrashIcon } from '../components/Icons'
+import { RowSkeleton } from '../components/Skeleton'
+import EmptyDoodle from '../components/EmptyDoodle'
 
 export default function Food({ showAdd, onCloseAdd }) {
   const [day, setDay] = useState(todayISO())
@@ -104,9 +106,9 @@ export default function Food({ showAdd, onCloseAdd }) {
 
           <WeekStrip weekStart={week} meals={meals} selected={day} goal={goal} onSelect={setDay} />
 
-          {loading && <p className="empty">fetching your meals…</p>}
+          {loading && <RowSkeleton />}
           {!loading && dayMeals.length === 0 && (
-            <p className="empty">nothing logged for {dayLabel(day)} yet. add what you ate and it shows up here.</p>
+            <EmptyDoodle kind="bowl">nothing logged for {dayLabel(day)} yet. add what you ate and it shows up here.</EmptyDoodle>
           )}
 
           {!loading &&
@@ -119,8 +121,8 @@ export default function Food({ showAdd, onCloseAdd }) {
                     <h2>{m.label}</h2>
                     <span>{kcal(sumCalories(items))}</span>
                   </div>
-                  {items.map((item) => (
-                    <div key={item.id} className="row">
+                  {items.map((item, i) => (
+                    <div key={item.id} className="row pop" style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}>
                       <div className="row-icon" style={{ background: m.color }}>
                         <MealIcon meal={m.id} size={22} />
                       </div>

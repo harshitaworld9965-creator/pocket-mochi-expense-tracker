@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { fetchExpenses } from '../api'
 import { MOODS } from '../supabase'
 import { monthRange, shortMonth, monthName, rupees, shortRupees, sumAmounts } from '../utils'
-import { MoodIcon } from './Icons'
+import { MoodIcon } from '../components/Icons'
+import { CardSkeleton } from '../components/Skeleton'
+import EmptyDoodle from '../components/EmptyDoodle'
 
 const MONTHS_SHOWN = 6
 const PLOT_MAX = 85 // tallest bar uses 85% of the chart height, leaving room for its label
@@ -30,7 +32,7 @@ export default function Stats({ budget }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (loading) return <><PageHead /><p className="empty">crunching numbers…</p></>
+  if (loading) return <><PageHead /><CardSkeleton height={96} /><CardSkeleton height={300} /><CardSkeleton height={220} /></>
   if (error) return <><PageHead /><p className="empty">{error}</p></>
 
   const bars = months.map((m, i) => {
@@ -111,7 +113,7 @@ export default function Stats({ budget }) {
 
       <section className="card">
         <h2 className="section-title">where {monthName()} went</h2>
-        {moodTotals.length === 0 && <p className="empty">add a spend this month to see the split.</p>}
+        {moodTotals.length === 0 && <EmptyDoodle kind="chart">add a spend this month to see the split.</EmptyDoodle>}
         <div className="mood-split">
           {moodTotals.map((m) => {
             const pct = Math.round((m.total / thisMonth.total) * 100)

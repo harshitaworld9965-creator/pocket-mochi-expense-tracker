@@ -1,4 +1,6 @@
 import ExpenseRow from './ExpenseRow'
+import { RowSkeleton } from './Skeleton'
+import EmptyDoodle from './EmptyDoodle'
 
 const SHOW = 6
 
@@ -16,13 +18,16 @@ export default function RecentList({ expenses, loading, onDelete, onSeeAll }) {
         )}
       </div>
 
-      {loading && <p className="empty">fetching your spends…</p>}
+      {loading && <RowSkeleton />}
 
       {!loading && expenses.length === 0 && (
-        <p className="empty">nothing logged this month yet. add your first spend and it shows up here.</p>
+        <EmptyDoodle kind="purse">nothing logged this month yet. your first spend shows up here.</EmptyDoodle>
       )}
 
-      {!loading && visible.map((e) => <ExpenseRow key={e.id} expense={e} onDelete={onDelete} />)}
+      {!loading &&
+        visible.map((e, i) => (
+          <ExpenseRow key={e.id} expense={e} onDelete={onDelete} style={{ animationDelay: `${i * 45}ms` }} />
+        ))}
     </section>
   )
 }

@@ -3,6 +3,8 @@ import { fetchExpenses } from '../api'
 import { monthRange, monthLabel, rupees, sumAmounts, dayLabel } from '../utils'
 import ExpenseRow from '../components/ExpenseRow'
 import { BackIcon, NextIcon } from '../components/Icons'
+import { RowSkeleton } from '../components/Skeleton'
+import EmptyDoodle from '../components/EmptyDoodle'
 
 // turns a newest-first list into [{ date, items }] — one group per day
 function groupByDay(list) {
@@ -78,10 +80,10 @@ export default function History({ onDelete }) {
         </button>
       </div>
 
-      {loading && <p className="empty">fetching {label}…</p>}
+      {loading && <RowSkeleton count={4} />}
       {!loading && error && <p className="empty">{error}</p>}
       {!loading && !error && list.length === 0 && (
-        <p className="empty">no spends logged in {label}.</p>
+        <EmptyDoodle kind="calendar">no spends logged in {label}.</EmptyDoodle>
       )}
 
       {!loading && !error && (
@@ -92,8 +94,8 @@ export default function History({ onDelete }) {
                 <h2>{dayLabel(g.date)}</h2>
                 <span>{rupees(sumAmounts(g.items))}</span>
               </div>
-              {g.items.map((e) => (
-                <ExpenseRow key={e.id} expense={e} onDelete={handleDelete} showDate={false} />
+              {g.items.map((e, i) => (
+                <ExpenseRow key={e.id} expense={e} onDelete={handleDelete} showDate={false} style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }} />
               ))}
             </section>
           ))}

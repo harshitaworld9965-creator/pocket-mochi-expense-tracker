@@ -5,12 +5,12 @@ import { MoodIcon, TrashIcon } from './Icons'
 export const moodOf = (id) => MOODS.find((m) => m.id === id) ?? MOODS[MOODS.length - 1]
 
 // one spend — used on Home and History
-export default function ExpenseRow({ expense, onDelete, showDate = true }) {
+export default function ExpenseRow({ expense, onDelete, showDate = true, style }) {
   const m = moodOf(expense.mood)
   const name = expense.note || m.label
 
   return (
-    <div className="row">
+    <div className="row pop" style={style}>
       <div className="row-icon" style={{ background: m.color }}>
         <MoodIcon mood={m.id} size={22} />
       </div>

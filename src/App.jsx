@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { DEFAULT_BUDGET } from './supabase'
 import { fetchExpenses, insertExpense, removeExpense, loadSetting, saveSetting } from './api'
-import { currentMonthRange } from './utils'
+import { currentMonthRange, sumAmounts } from './utils'
 import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -80,13 +80,15 @@ export default function App() {
     }
   }
 
+  const budgetPct = (sumAmounts(expenses) / budget) * 100
+
   return (
     <div className="app">
       <div className="blob blob-a" />
       <div className="blob blob-b" />
 
       <div className="layout">
-        <Sidebar page={page} onNavigate={navigate} expenses={expenses} />
+        <Sidebar page={page} onNavigate={navigate} expenses={expenses} budgetPct={budgetPct} />
 
         <main className="main">
           {error && (
@@ -96,6 +98,8 @@ export default function App() {
             </div>
           )}
 
+          {/* key={page} makes React rebuild this box on every page switch, which replays the entrance animation */}
+          <div key={page} className="page">
           {page === 'home' && (
             <Home
               expenses={expenses}
@@ -112,6 +116,7 @@ export default function App() {
           {page === 'history' && <History onDelete={deleteExpense} />}
           {page === 'stats' && <Stats budget={budget} />}
           {page === 'food' && <Food showAdd={sheet === 'meal'} onCloseAdd={() => setSheet(null)} />}
+          </div>
         </main>
       </div>
 

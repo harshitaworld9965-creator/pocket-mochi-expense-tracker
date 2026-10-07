@@ -383,6 +383,65 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
 .week-goal { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--muted); z-index: 1; }
 .week-name { font-size: 12px; font-weight: 800; }
 
+/* ---------- motion & delight ---------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* page switch */
+.page { display: flex; flex-direction: column; gap: 22px; min-width: 0; animation: page-in .32s ease-out; }
+@keyframes page-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* rows pop in, one after another */
+.pop { animation: pop-in .4s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+@keyframes pop-in { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+
+/* mochi */
+.mochi-eyes { transform-box: view-box; transform-origin: 12px 12px; animation: blink 5s infinite; }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+.mochi-sweat { animation: sweat 1.6s ease-in-out infinite; }
+@keyframes sweat { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(1.2px); opacity: .7; } }
+.avatar .mochi { transition: transform .3s; }
+.avatar:hover .mochi { transform: rotate(-8deg) scale(1.08); }
+
+/* confetti */
+.confetti-layer { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+.confetti-layer span { position: absolute; border: 1.5px solid var(--ink); }
+
+/* skeletons */
+.skeleton-list { display: flex; flex-direction: column; gap: 10px; }
+.skeleton-row { border-style: dashed; }
+.sk {
+  display: block; border-radius: 999px;
+  background: linear-gradient(90deg, var(--blush) 0%, var(--cream) 50%, var(--blush) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.sk-icon { width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; }
+.sk-text { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.sk-line { height: 12px; width: 60%; }
+.sk-line.short { width: 35%; }
+.sk-amount { width: 52px; height: 18px; }
+.sk-card { border-radius: 28px; border: 2.5px dashed var(--ink); }
+
+/* empty-state doodles */
+.empty.doodle { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 20px 24px; }
+.doodle-mochi { animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* little hover/press feedback */
+@media (hover: hover) {
+  .mood-tile { transition: transform .15s, box-shadow .15s; }
+  .mood-tile:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
+  .row { transition: transform .15s; }
+  .row:hover { transform: translateX(3px); }
+}
+.tab { transition: background .2s, color .2s; }
+.tab-add, .round-btn, .back { transition: transform .1s, box-shadow .1s; }
+.round-btn:active, .back:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
 /* ---------- desktop ---------- */
 @media (min-width: 900px) {
   .app { padding-bottom: 48px; }
@@ -417,6 +476,7 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
   .bottom-nav { display: none; }
 
   .main { flex: 1; gap: 28px; }
+  .page { gap: 28px; }
   .hello .avatar { display: none; }
   .hello h1, .page-head h1 { font-size: 40px; }
 

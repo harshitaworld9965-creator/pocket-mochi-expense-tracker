@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { confetti } from '../confetti'
 import { MEALS } from '../supabase'
 import { dayLabel, guessMeal } from '../utils'
 import { MealIcon, BackIcon } from './Icons'
@@ -9,6 +10,8 @@ export default function AddMeal({ open, onClose, onSave, day }) {
   const [meal, setMeal] = useState(guessMeal())
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const headSaveRef = useRef(null)
+  const saveRef = useRef(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -25,7 +28,10 @@ export default function AddMeal({ open, onClose, onSave, day }) {
     setSaving(true)
     setError('')
     try {
+      // the header button is hidden on desktop (offsetParent is null when display: none)
+      const visibleButton = headSaveRef.current?.offsetParent ? headSaveRef.current : saveRef.current
       await onSave({ name: name.trim(), calories: value, meal, eaten_on: day })
+      confetti(visibleButton)
       setName('')
       setCalories('') // the meal stays picked, so logging several items for lunch is quick
     } catch {
@@ -42,7 +48,7 @@ export default function AddMeal({ open, onClose, onSave, day }) {
           <BackIcon />
         </button>
         <h2>add food</h2>
-        <button type="submit" className="head-save" disabled={saving}>
+        <button type="submit" className="head-save" disabled={saving} ref={headSaveRef}>
           {saving ? 'saving…' : 'save'}
         </button>
       </div>
@@ -105,7 +111,7 @@ export default function AddMeal({ open, onClose, onSave, day }) {
       </fieldset>
 
       <div className="save-bar">
-        <button type="submit" className="save" disabled={saving}>
+        <button type="submit" className="save" disabled={saving} ref={saveRef}>
           {saving ? 'saving…' : 'save it'}
         </button>
       </div>

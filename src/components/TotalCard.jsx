@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { rupees, daysLeftInMonth, monthName } from '../utils'
 import { PencilIcon } from './Icons'
+import useCountUp from '../useCountUp'
 
 export default function TotalCard({ total, budget, onBudgetChange }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
 
+  const shown = useCountUp(total)
   const pct = Math.round((total / budget) * 100)
   const over = total > budget
   const left = daysLeftInMonth()
@@ -31,7 +33,7 @@ export default function TotalCard({ total, budget, onBudgetChange }) {
         </span>
       </div>
 
-      <p className="total-amount">{rupees(total)}</p>
+      <p className="total-amount">{rupees(shown)}</p>
 
       <div>
         <div className="budget-meta">

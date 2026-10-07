@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { confetti } from '../confetti'
 import { MOODS } from '../supabase'
 import { todayISO } from '../utils'
 import { MoodIcon, BackIcon } from './Icons'
@@ -10,6 +11,8 @@ export default function AddExpense({ open, onClose, onSave }) {
   const [date, setDate] = useState(todayISO())
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const headSaveRef = useRef(null)
+  const saveRef = useRef(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -22,7 +25,10 @@ export default function AddExpense({ open, onClose, onSave }) {
     setSaving(true)
     setError('')
     try {
+      // the header button is hidden on desktop (offsetParent is null when display: none)
+      const visibleButton = headSaveRef.current?.offsetParent ? headSaveRef.current : saveRef.current
       await onSave({ amount: value, note: note.trim(), mood, spent_on: date })
+      confetti(visibleButton)
       setAmount('')
       setNote('')
       setMood('food')
@@ -41,7 +47,7 @@ export default function AddExpense({ open, onClose, onSave }) {
           <BackIcon />
         </button>
         <h2>new expense</h2>
-        <button type="submit" className="head-save" disabled={saving}>
+        <button type="submit" className="head-save" disabled={saving} ref={headSaveRef}>
           {saving ? 'saving…' : 'save'}
         </button>
       </div>
@@ -116,7 +122,7 @@ export default function AddExpense({ open, onClose, onSave }) {
 
       {/* sticky bar keeps "save it" on screen even when the phone keyboard is open */}
       <div className="save-bar">
-        <button type="submit" className="save" disabled={saving}>
+        <button type="submit" className="save" disabled={saving} ref={saveRef}>
           {saving ? 'saving…' : 'save it'}
         </button>
       </div>
