@@ -405,6 +405,24 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
 .avatar .mochi { transition: transform .3s; }
 .avatar:hover .mochi { transform: rotate(-8deg) scale(1.08); }
 
+/* what mochi is thinking */
+.mochi-say {
+  align-self: flex-start;
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px 16px 16px 4px;
+  padding: 6px 12px; font-size: 13px; font-weight: 800;
+}
+.sidebar .mochi-say { margin-top: -14px; }
+/* on the phone header it's a bubble that pops out of the avatar */
+.mochi-wrap { position: relative; }
+.mochi-say-bubble {
+  position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+  width: max-content; max-width: 200px;
+  border-radius: 16px 4px 16px 16px;
+  animation: pop-in .4s cubic-bezier(.34, 1.56, .64, 1) backwards; animation-delay: .4s;
+}
+.mochi-zzz { animation: zzz 2s ease-in-out infinite; }
+@keyframes zzz { 0%, 100% { opacity: .3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-1px); } }
+
 /* confetti */
 .confetti-layer { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
 .confetti-layer span { position: absolute; border: 1.5px solid var(--ink); }
@@ -478,6 +496,7 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
   .main { flex: 1; gap: 28px; }
   .page { gap: 28px; }
   .hello .avatar { display: none; }
+  .hello .mochi-say-bubble { display: none; }
   .hello h1, .page-head h1 { font-size: 40px; }
 
   .top-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }

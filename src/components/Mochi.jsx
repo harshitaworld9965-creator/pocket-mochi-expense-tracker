@@ -1,9 +1,21 @@
 // the mascot — its face follows how the month is going
 
 export function mochiMood(pct) {
+  if (pct === 0) return 'sleepy'
   if (pct >= 100) return 'worried'
   if (pct >= 75) return 'okay'
-  return 'happy'
+  if (pct >= 40) return 'happy'
+  return 'excited'
+}
+
+export function mochiLine(mood) {
+  return {
+    sleepy: 'nothing logged yet… zzz',
+    excited: 'ooh, lots of room this month!',
+    happy: 'all good, keep going',
+    okay: 'hmm, getting close…',
+    worried: 'over budget! be gentle with me',
+  }[mood]
 }
 
 export default function Mochi({ mood = 'happy', size = 28 }) {
@@ -24,22 +36,30 @@ export default function Mochi({ mood = 'happy', size = 28 }) {
       <path d="M8 4.5c-1-1.5-3-1.5-3 0M16 4.5c1-1.5 3-1.5 3 0" />
       <path d="M5 11c0-4 3-7 7-7s7 3 7 7v3c0 1-1 2-2 2H7c-1 0-2-1-2-2z" />
 
-      <g className="mochi-eyes">
-        {mood === 'worried' ? (
-          <path d="M8.5 11.3l2 1.2M15.5 11.3l-2 1.2" />
-        ) : (
-          <>
-            <circle cx="9.5" cy="12" r="1" fill="currentColor" stroke="none" />
-            <circle cx="14.5" cy="12" r="1" fill="currentColor" stroke="none" />
-          </>
-        )}
-      </g>
+      {/* eyes */}
+      {mood === 'sleepy' && <path d="M8.5 12h2M13.5 12h2" />}
+      {mood === 'worried' && <path d="M8.5 11.3l2 1.2M15.5 11.3l-2 1.2" />}
+      {mood === 'excited' && (
+        <g className="mochi-eyes">
+          <path d="M8.3 12.5c.6-1.2 1.8-1.2 2.4 0M13.3 12.5c.6-1.2 1.8-1.2 2.4 0" />
+        </g>
+      )}
+      {(mood === 'happy' || mood === 'okay') && (
+        <g className="mochi-eyes">
+          <circle cx="9.5" cy="12" r="1" fill="currentColor" stroke="none" />
+          <circle cx="14.5" cy="12" r="1" fill="currentColor" stroke="none" />
+        </g>
+      )}
 
+      {/* mouth */}
+      {mood === 'sleepy' && <circle cx="12" cy="15.5" r=".9" />}
+      {mood === 'excited' && <path d="M9.5 15c1 1.8 4 1.8 5 0z" fill="currentColor" />}
       {mood === 'happy' && <path d="M10 15.5c1 .8 3 .8 4 0" />}
       {mood === 'okay' && <path d="M10 15.5h4" />}
       {mood === 'worried' && <path d="M10 16c1-.8 3-.8 4 0" />}
 
-      {mood === 'happy' && (
+      {/* extras */}
+      {(mood === 'happy' || mood === 'excited') && (
         <>
           <circle cx="7.6" cy="14.2" r=".9" fill="#ff8fab" stroke="none" />
           <circle cx="16.4" cy="14.2" r=".9" fill="#ff8fab" stroke="none" />
@@ -52,6 +72,9 @@ export default function Mochi({ mood = 'happy', size = 28 }) {
           fill="#c9b6ff"
           strokeWidth="1.2"
         />
+      )}
+      {mood === 'sleepy' && (
+        <text className="mochi-zzz" x="17" y="7" fontSize="5" fontWeight="800" fill="currentColor" stroke="none">z</text>
       )}
     </svg>
   )

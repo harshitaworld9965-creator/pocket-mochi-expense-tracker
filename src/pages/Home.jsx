@@ -2,7 +2,7 @@ import TotalCard from '../components/TotalCard'
 import MoodTiles from '../components/MoodTiles'
 import RecentList from '../components/RecentList'
 import AddExpense from '../components/AddExpense'
-import Mochi, { mochiMood } from '../components/Mochi'
+import Mochi, { mochiMood, mochiLine } from '../components/Mochi'
 import { greeting, sumAmounts } from '../utils'
 
 export default function Home({
@@ -10,6 +10,7 @@ export default function Home({
   onDelete, onSave, showAdd, onCloseAdd, onSeeAll,
 }) {
   const total = sumAmounts(expenses)
+  const mood = mochiMood((total / budget) * 100)
 
   return (
     <>
@@ -18,8 +19,9 @@ export default function Home({
           <p className="hello-small">{greeting()}</p>
           <h1>Harshita</h1>
         </div>
-        <span className="avatar">
-          <Mochi mood={mochiMood((total / budget) * 100)} />
+        <span className="avatar mochi-wrap">
+          <Mochi mood={mood} />
+          <span className="mochi-say mochi-say-bubble">{mochiLine(mood)}</span>
         </span>
       </header>
 

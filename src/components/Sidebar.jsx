@@ -1,18 +1,21 @@
-import Mochi, { mochiMood } from './Mochi'
+import Mochi, { mochiMood, mochiLine } from './Mochi'
 import { NAV_ITEMS } from './navItems'
 import { streak } from '../utils'
 
 export default function Sidebar({ page, onNavigate, expenses, budgetPct }) {
   const days = streak(expenses)
+  const mood = mochiMood(budgetPct)
 
   return (
     <aside className="sidebar">
       <div className="logo">
         <span className="avatar">
-          <Mochi mood={mochiMood(budgetPct)} />
+          <Mochi mood={mood} />
         </span>
         Pocket Mochi
       </div>
+
+      <p className="mochi-say">{mochiLine(mood)}</p>
 
       <nav className="side-nav" aria-label="main">
         {NAV_ITEMS.map(({ id, label, Icon }) => (
