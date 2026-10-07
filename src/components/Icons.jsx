@@ -64,6 +64,36 @@ export function MoodIcon({ mood, size = 24 }) {
   return <Svg size={size}>{moodPaths[mood] ?? moodPaths.other}</Svg>
 }
 
+const mealPaths = {
+  breakfast: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" />
+    </>
+  ),
+  lunch: moodPaths.food,
+  snacks: (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="9" cy="10" r="1" fill="currentColor" />
+      <circle cx="14.5" cy="9.5" r="1" fill="currentColor" />
+      <circle cx="13" cy="14.5" r="1" fill="currentColor" />
+    </>
+  ),
+  dinner: <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />,
+}
+
+export function MealIcon({ meal, size = 24 }) {
+  return <Svg size={size}>{mealPaths[meal] ?? mealPaths.lunch}</Svg>
+}
+
+export const FoodIcon = () => (
+  <Svg size={22}>
+    <path d="M12 7.5c-2-2-6.5-1.5-6.5 3.5 0 5 3 9.5 6.5 9.5s6.5-4.5 6.5-9.5c0-5-4.5-5.5-6.5-3.5z" />
+    <path d="M12 7.5c0-2 1-3.5 3-4" />
+  </Svg>
+)
+
 export const HomeIcon = () => <Svg size={22}>{moodPaths.home}</Svg>
 export const CalendarIcon = () => <Svg size={22}>{moodPaths.bills}</Svg>
 

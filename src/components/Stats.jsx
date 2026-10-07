@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { fetchExpenses } from '../api'
 import { MOODS } from '../supabase'
 import { monthRange, shortMonth, monthName, rupees, shortRupees, sumAmounts } from '../utils'
-import { MoodIcon } from '../components/Icons'
+import { MoodIcon } from './Icons'
 
 const MONTHS_SHOWN = 6
 const PLOT_MAX = 85 // tallest bar uses 85% of the chart height, leaving room for its label

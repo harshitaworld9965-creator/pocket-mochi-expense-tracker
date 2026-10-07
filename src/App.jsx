@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { DEFAULT_BUDGET } from './supabase'
-import { fetchExpenses, insertExpense, removeExpense, loadBudget, saveBudget } from './api'
+import { fetchExpenses, insertExpense, removeExpense, loadSetting, saveSetting } from './api'
 import { currentMonthRange } from './utils'
 import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
 import History from './pages/History'
 import Stats from './pages/Stats'
+import Food from './pages/Food'
 
 const newestFirst = (a, b) =>
   b.spent_on.localeCompare(a.spent_on) || b.created_at.localeCompare(a.created_at)
@@ -17,7 +18,7 @@ export default function App() {
   const [budget, setBudget] = useState(DEFAULT_BUDGET)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [showAdd, setShowAdd] = useState(false)
+  const [sheet, setSheet] = useState(null) // which phone form is open: null, 'expense' or 'meal'
 
   useEffect(() => {
     const { from, to } = currentMonthRange()
@@ -27,19 +28,23 @@ export default function App() {
       .finally(() => setLoading(false))
 
     // if this fails we quietly keep the default budget
-    loadBudget().then(setBudget).catch(() => {})
+    loadSetting('monthly_budget', DEFAULT_BUDGET).then(setBudget).catch(() => {})
   }, [])
 
   function navigate(to) {
     setPage(to)
-    setShowAdd(false)
+    setSheet(null)
     window.scrollTo(0, 0)
   }
 
-  // the + button works from any page: jump home and open the form
+  // the + button: on the food page it adds food, everywhere else it jumps home and adds a spend
   function openAdd() {
-    navigate('home')
-    setShowAdd(true)
+    if (page === 'food') {
+      setSheet('meal')
+    } else {
+      navigate('home')
+      setSheet('expense')
+    }
   }
 
   async function addExpense(expense) {
@@ -47,7 +52,7 @@ export default function App() {
     if (saved.spent_on >= currentMonthRange().from) {
       setExpenses((prev) => [saved, ...prev].sort(newestFirst))
     }
-    setShowAdd(false)
+    setSheet(null)
   }
 
   // returns true/false so History knows whether to remove the row too
@@ -68,7 +73,7 @@ export default function App() {
     const before = budget
     setBudget(value)
     try {
-      await saveBudget(value)
+      await saveSetting('monthly_budget', value)
     } catch {
       setBudget(before)
       setError("couldn't save your new budget. try again.")
@@ -99,13 +104,14 @@ export default function App() {
               onBudgetChange={changeBudget}
               onDelete={deleteExpense}
               onSave={addExpense}
-              showAdd={showAdd}
-              onCloseAdd={() => setShowAdd(false)}
+              showAdd={sheet === 'expense'}
+              onCloseAdd={() => setSheet(null)}
               onSeeAll={() => navigate('history')}
             />
           )}
           {page === 'history' && <History onDelete={deleteExpense} />}
           {page === 'stats' && <Stats budget={budget} />}
+          {page === 'food' && <Food showAdd={sheet === 'meal'} onCloseAdd={() => setSheet(null)} />}
         </main>
       </div>
 

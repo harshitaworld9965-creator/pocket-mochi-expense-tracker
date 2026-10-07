@@ -51,6 +51,7 @@ export default function AddExpense({ open, onClose, onSave }) {
             id="amount"
             type="number"
             inputMode="decimal"
+            enterKeyHint="next"
             min="0"
             step="any"
             placeholder="0"
@@ -67,6 +68,7 @@ export default function AddExpense({ open, onClose, onSave }) {
           className="text-input"
           type="text"
           placeholder="chai, auto, snacks…"
+          enterKeyHint="done"
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
@@ -103,15 +105,17 @@ export default function AddExpense({ open, onClose, onSave }) {
         />
       </div>
 
-      {error && (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      )}
-
-      <button type="submit" className="save" disabled={saving}>
-        {saving ? 'saving…' : 'save it'}
-      </button>
+      {/* sticky bar keeps "save it" on screen even when the phone keyboard is open */}
+      <div className="save-bar">
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button type="submit" className="save" disabled={saving}>
+          {saving ? 'saving…' : 'save it'}
+        </button>
+      </div>
     </form>
   )
 }

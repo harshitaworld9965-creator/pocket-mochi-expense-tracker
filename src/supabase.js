@@ -10,6 +10,7 @@ if (!url || !key) {
 export const supabase = createClient(url, key)
 
 export const TABLE = 'mochi_expenses'
+export const MEALS_TABLE = 'mochi_meals'
 export const SETTINGS_TABLE = 'mochi_settings'
 
 export const MOODS = [
@@ -23,5 +24,13 @@ export const MOODS = [
   { id: 'other',    label: 'other',    color: '#ffe9a8' },
 ]
 
-// used until the saved budget loads, or if it can't be loaded
+export const MEALS = [
+  { id: 'breakfast', label: 'breakfast', color: '#ffe9a8' },
+  { id: 'lunch',     label: 'lunch',     color: '#b8f2d0' },
+  { id: 'snacks',    label: 'snacks',    color: '#ffd6e0' },
+  { id: 'dinner',    label: 'dinner',    color: '#c9b6ff' },
+]
+
+// used until the saved values load, or if they can't be loaded
 export const DEFAULT_BUDGET = 15000
+export const DEFAULT_CALORIES = 2000
