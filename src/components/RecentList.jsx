@@ -4,7 +4,7 @@ import EmptyDoodle from './EmptyDoodle'
 
 const SHOW = 6
 
-export default function RecentList({ expenses, loading, onDelete, onSeeAll }) {
+export default function RecentList({ expenses, loading, onEdit, onDelete, onSeeAll }) {
   const visible = expenses.slice(0, SHOW)
 
   return (
@@ -26,7 +26,13 @@ export default function RecentList({ expenses, loading, onDelete, onSeeAll }) {
 
       {!loading &&
         visible.map((e, i) => (
-          <ExpenseRow key={e.id} expense={e} onDelete={onDelete} style={{ animationDelay: `${i * 45}ms` }} />
+          <ExpenseRow
+            key={e.id}
+            expense={e}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            style={{ animationDelay: `${i * 45}ms` }}
+          />
         ))}
     </section>
   )

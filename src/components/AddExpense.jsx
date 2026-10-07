@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { confetti } from '../confetti'
 import { MOODS } from '../supabase'
 import { todayISO } from '../utils'
 import { MoodIcon, BackIcon } from './Icons'
 
-export default function AddExpense({ open, onClose, onSave }) {
+// one form for both adding and editing: when `editing` is set, the fields fill in and "save" becomes "update"
+export default function AddExpense({ open, onClose, onSave, editing, onUpdate, onCancelEdit }) {
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
   const [mood, setMood] = useState('food')
@@ -13,6 +14,29 @@ export default function AddExpense({ open, onClose, onSave }) {
   const [error, setError] = useState('')
   const headSaveRef = useRef(null)
   const saveRef = useRef(null)
+
+  // when a row is tapped, copy its values into the fields
+  useEffect(() => {
+    if (!editing) return
+    setAmount(String(editing.amount))
+    setNote(editing.note || '')
+    setMood(editing.mood)
+    setDate(editing.spent_on)
+    setError('')
+  }, [editing])
+
+  function reset() {
+    setAmount('')
+    setNote('')
+    setMood('food')
+    setDate(todayISO())
+    setError('')
+  }
+
+  function cancelEdit() {
+    reset()
+    onCancelEdit()
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -27,12 +51,11 @@ export default function AddExpense({ open, onClose, onSave }) {
     try {
       // the header button is hidden on desktop (offsetParent is null when display: none)
       const visibleButton = headSaveRef.current?.offsetParent ? headSaveRef.current : saveRef.current
-      await onSave({ amount: value, note: note.trim(), mood, spent_on: date })
+      const fields = { amount: value, note: note.trim(), mood, spent_on: date }
+      if (editing) await onUpdate(editing.id, fields)
+      else await onSave(fields)
       confetti(visibleButton)
-      setAmount('')
-      setNote('')
-      setMood('food')
-      setDate(todayISO())
+      reset()
     } catch {
       setError("couldn't save. check your internet and try again.")
     } finally {
@@ -43,12 +66,25 @@ export default function AddExpense({ open, onClose, onSave }) {
   return (
     <form className={`add${open ? ' open' : ''}`} onSubmit={handleSubmit}>
       <div className="add-head">
-        <button type="button" className="back" aria-label="back to home" onClick={onClose}>
+        <button
+          type="button"
+          className="back"
+          aria-label="back to home"
+          onClick={() => {
+            if (editing) cancelEdit()
+            onClose()
+          }}
+        >
           <BackIcon />
         </button>
-        <h2>new expense</h2>
+        <h2>{editing ? 'edit expense' : 'new expense'}</h2>
+        {editing && (
+          <button type="button" className="link-btn cancel-edit" onClick={cancelEdit}>
+            cancel
+          </button>
+        )}
         <button type="submit" className="head-save" disabled={saving} ref={headSaveRef}>
-          {saving ? 'saving…' : 'save'}
+          {saving ? 'saving…' : editing ? 'update' : 'save'}
         </button>
       </div>
 
@@ -120,10 +156,9 @@ export default function AddExpense({ open, onClose, onSave }) {
         />
       </div>
 
-      {/* sticky bar keeps "save it" on screen even when the phone keyboard is open */}
       <div className="save-bar">
         <button type="submit" className="save" disabled={saving} ref={saveRef}>
-          {saving ? 'saving…' : 'save it'}
+          {saving ? 'saving…' : editing ? 'update it' : 'save it'}
         </button>
       </div>
     </form>

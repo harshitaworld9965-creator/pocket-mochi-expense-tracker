@@ -23,6 +23,12 @@ export async function insertExpense(expense) {
   return data
 }
 
+export async function updateExpense(id, fields) {
+  const { data, error } = await supabase.from(TABLE).update(fields).eq('id', id).select().single()
+  if (error) throw error
+  return data
+}
+
 export async function removeExpense(id) {
   const { error } = await supabase.from(TABLE).delete().eq('id', id)
   if (error) throw error
@@ -45,6 +51,12 @@ export async function fetchMeals(fromISO, toISO) {
 
 export async function insertMeal(meal) {
   const { data, error } = await supabase.from(MEALS_TABLE).insert(meal).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function updateMeal(id, fields) {
+  const { data, error } = await supabase.from(MEALS_TABLE).update(fields).eq('id', id).select().single()
   if (error) throw error
   return data
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchMeals, insertMeal, removeMeal, loadSetting, saveSetting } from '../api'
+import { fetchMeals, insertMeal, updateMeal, removeMeal, loadSetting, saveSetting } from '../api'
 import { MEALS, DEFAULT_CALORIES } from '../supabase'
 import { todayISO, addDays, weekStartISO, dayLabel, kcal, sumCalories } from '../utils'
 import CalorieCard from '../components/CalorieCard'
@@ -9,12 +9,13 @@ import { MealIcon, BackIcon, NextIcon, TrashIcon } from '../components/Icons'
 import { RowSkeleton } from '../components/Skeleton'
 import EmptyDoodle from '../components/EmptyDoodle'
 
-export default function Food({ showAdd, onCloseAdd }) {
+export default function Food({ showAdd, onOpenAdd, onCloseAdd }) {
   const [day, setDay] = useState(todayISO())
   const [meals, setMeals] = useState([]) // the whole week that `day` is in
   const [goal, setGoal] = useState(DEFAULT_CALORIES)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [editing, setEditing] = useState(null)
 
   const week = weekStartISO(day)
   const isToday = day === todayISO()
@@ -42,6 +43,18 @@ export default function Food({ showAdd, onCloseAdd }) {
   async function addMeal(meal) {
     const saved = await insertMeal(meal) // AddMeal catches errors itself
     if (weekStartISO(saved.eaten_on) === week) setMeals((prev) => [...prev, saved])
+    onCloseAdd()
+  }
+
+  function startEdit(meal) {
+    setEditing(meal)
+    onOpenAdd()
+  }
+
+  async function changeMeal(id, fields) {
+    const saved = await updateMeal(id, fields) // AddMeal catches errors itself
+    setMeals((prev) => prev.map((m) => (m.id === id ? saved : m)))
+    setEditing(null)
     onCloseAdd()
   }
 
@@ -123,15 +136,17 @@ export default function Food({ showAdd, onCloseAdd }) {
                   </div>
                   {items.map((item, i) => (
                     <div key={item.id} className="row pop" style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}>
-                      <div className="row-icon" style={{ background: m.color }}>
-                        <MealIcon meal={m.id} size={22} />
-                      </div>
-                      <div className="row-text">
-                        <p className="row-note">{item.name}</p>
-                      </div>
-                      <p className="row-amount">
-                        {item.calories.toLocaleString('en-IN')} <small>kcal</small>
-                      </p>
+                      <button className="row-main" onClick={() => startEdit(item)} aria-label={`edit ${item.name}`}>
+                        <span className="row-icon" style={{ background: m.color }}>
+                          <MealIcon meal={m.id} size={22} />
+                        </span>
+                        <span className="row-text">
+                          <span className="row-note">{item.name}</span>
+                        </span>
+                        <span className="row-amount">
+                          {item.calories.toLocaleString('en-IN')} <small>kcal</small>
+                        </span>
+                      </button>
                       <button
                         className="icon-btn"
                         aria-label={`delete ${item.name}`}
@@ -148,7 +163,15 @@ export default function Food({ showAdd, onCloseAdd }) {
             })}
         </div>
 
-        <AddMeal open={showAdd} onClose={onCloseAdd} onSave={addMeal} day={day} />
+        <AddMeal
+          open={showAdd}
+          onClose={onCloseAdd}
+          onSave={addMeal}
+          day={day}
+          editing={editing}
+          onUpdate={changeMeal}
+          onCancelEdit={() => setEditing(null)}
+        />
       </div>
     </>
   )

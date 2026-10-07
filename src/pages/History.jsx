@@ -17,7 +17,7 @@ function groupByDay(list) {
   return groups
 }
 
-export default function History({ onDelete }) {
+export default function History({ onEdit, onDelete }) {
   const now = new Date()
   const [cursor, setCursor] = useState({ y: now.getFullYear(), m: now.getMonth() })
   const [list, setList] = useState([])
@@ -95,7 +95,7 @@ export default function History({ onDelete }) {
                 <span>{rupees(sumAmounts(g.items))}</span>
               </div>
               {g.items.map((e, i) => (
-                <ExpenseRow key={e.id} expense={e} onDelete={handleDelete} showDate={false} style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }} />
+                <ExpenseRow key={e.id} expense={e} onEdit={onEdit} onDelete={handleDelete} showDate={false} style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }} />
               ))}
             </section>
           ))}

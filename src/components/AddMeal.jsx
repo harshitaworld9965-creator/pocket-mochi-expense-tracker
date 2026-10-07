@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { confetti } from '../confetti'
 import { MEALS } from '../supabase'
 import { dayLabel, guessMeal } from '../utils'
 import { MealIcon, BackIcon } from './Icons'
 
-export default function AddMeal({ open, onClose, onSave, day }) {
+export default function AddMeal({ open, onClose, onSave, day, editing, onUpdate, onCancelEdit }) {
   const [name, setName] = useState('')
   const [calories, setCalories] = useState('')
   const [meal, setMeal] = useState(guessMeal())
@@ -12,6 +12,25 @@ export default function AddMeal({ open, onClose, onSave, day }) {
   const [error, setError] = useState('')
   const headSaveRef = useRef(null)
   const saveRef = useRef(null)
+
+  useEffect(() => {
+    if (!editing) return
+    setName(editing.name)
+    setCalories(String(editing.calories))
+    setMeal(editing.meal)
+    setError('')
+  }, [editing])
+
+  function reset() {
+    setName('')
+    setCalories('') // the meal stays picked, so logging several items for lunch is quick
+    setError('')
+  }
+
+  function cancelEdit() {
+    reset()
+    onCancelEdit()
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -28,12 +47,11 @@ export default function AddMeal({ open, onClose, onSave, day }) {
     setSaving(true)
     setError('')
     try {
-      // the header button is hidden on desktop (offsetParent is null when display: none)
       const visibleButton = headSaveRef.current?.offsetParent ? headSaveRef.current : saveRef.current
-      await onSave({ name: name.trim(), calories: value, meal, eaten_on: day })
+      if (editing) await onUpdate(editing.id, { name: name.trim(), calories: value, meal })
+      else await onSave({ name: name.trim(), calories: value, meal, eaten_on: day })
       confetti(visibleButton)
-      setName('')
-      setCalories('') // the meal stays picked, so logging several items for lunch is quick
+      reset()
     } catch {
       setError("couldn't save. check your internet and try again.")
     } finally {
@@ -44,12 +62,25 @@ export default function AddMeal({ open, onClose, onSave, day }) {
   return (
     <form className={`add${open ? ' open' : ''}`} onSubmit={handleSubmit}>
       <div className="add-head">
-        <button type="button" className="back" aria-label="back to food" onClick={onClose}>
+        <button
+          type="button"
+          className="back"
+          aria-label="back to food"
+          onClick={() => {
+            if (editing) cancelEdit()
+            onClose()
+          }}
+        >
           <BackIcon />
         </button>
-        <h2>add food</h2>
+        <h2>{editing ? 'edit food' : 'add food'}</h2>
+        {editing && (
+          <button type="button" className="link-btn cancel-edit" onClick={cancelEdit}>
+            cancel
+          </button>
+        )}
         <button type="submit" className="head-save" disabled={saving} ref={headSaveRef}>
-          {saving ? 'saving…' : 'save'}
+          {saving ? 'saving…' : editing ? 'update' : 'save'}
         </button>
       </div>
 
@@ -59,7 +90,7 @@ export default function AddMeal({ open, onClose, onSave, day }) {
         </p>
       )}
 
-      <p className="logging-for">logging for {dayLabel(day)}</p>
+      <p className="logging-for">{editing ? `logged on ${dayLabel(editing.eaten_on)}` : `logging for ${dayLabel(day)}`}</p>
 
       <div className="field">
         <label htmlFor="meal-name">what did you eat?</label>
@@ -112,7 +143,7 @@ export default function AddMeal({ open, onClose, onSave, day }) {
 
       <div className="save-bar">
         <button type="submit" className="save" disabled={saving} ref={saveRef}>
-          {saving ? 'saving…' : 'save it'}
+          {saving ? 'saving…' : editing ? 'update it' : 'save it'}
         </button>
       </div>
     </form>

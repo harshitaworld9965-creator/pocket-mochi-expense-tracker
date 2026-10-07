@@ -203,6 +203,32 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
   padding: 24px; text-align: center; font-weight: 700; color: var(--muted);
 }
 
+/* tappable part of a row (everything except the bin) */
+.row-main {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 12px;
+  background: none; border: none; padding: 0; text-align: left;
+  border-radius: 14px;
+}
+.row-main .row-note, .row-main .row-meta { display: block; }
+.cancel-edit { margin-left: auto; }
+.cancel-edit + .head-save { margin-left: 8px; }
+
+/* ---------- month review ---------- */
+.review { background: var(--butter); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.review-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.review-total { font-family: var(--display); font-size: 36px; font-weight: 700; line-height: 1.1; }
+.review-sub { font-size: 13px; font-weight: 800; }
+.review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.review-fact {
+  background: var(--white); border: 2px solid var(--ink); border-radius: 16px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.review-fact span { font-size: 11px; font-weight: 800; color: var(--muted); }
+.review-fact strong { font-family: var(--display); font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.review-fact small { font-size: 12px; font-weight: 800; }
+.review-dismiss { align-self: flex-end; }
+
 /* ---------- history ---------- */
 .month-switch { background: var(--butter); padding: 14px; display: flex; align-items: center; gap: 12px; }
 .month-switch-text { flex: 1; text-align: center; }
@@ -512,6 +538,8 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
   .recent { flex: 1; min-width: 0; }
 
   .card { padding: 26px; box-shadow: 6px 6px 0 var(--ink); }
+  .review { padding: 26px; box-shadow: 6px 6px 0 var(--ink); }
+  .review-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
   .facts { gap: 16px; }
   .fact { padding: 18px; }
   .fact-value { font-size: 28px; }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { DEFAULT_BUDGET } from './supabase'
-import { fetchExpenses, insertExpense, removeExpense, loadSetting, saveSetting } from './api'
+import { fetchExpenses, insertExpense, updateExpense, removeExpense, loadSetting, saveSetting } from './api'
 import { currentMonthRange, sumAmounts } from './utils'
 import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
@@ -19,6 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [sheet, setSheet] = useState(null) // which phone form is open: null, 'expense' or 'meal'
+  const [editing, setEditing] = useState(null) // the expense being edited, or null
 
   useEffect(() => {
     const { from, to } = currentMonthRange()
@@ -34,6 +35,7 @@ export default function App() {
   function navigate(to) {
     setPage(to)
     setSheet(null)
+    setEditing(null)
     window.scrollTo(0, 0)
   }
 
@@ -52,6 +54,26 @@ export default function App() {
     if (saved.spent_on >= currentMonthRange().from) {
       setExpenses((prev) => [saved, ...prev].sort(newestFirst))
     }
+    setSheet(null)
+  }
+
+  // tapping a row anywhere: go home, open the form with that spend in it
+  function startEdit(expense) {
+    navigate('home')
+    setEditing(expense)
+    setSheet('expense')
+  }
+
+  async function changeExpense(id, fields) {
+    const saved = await updateExpense(id, fields) // AddExpense catches errors itself
+    const from = currentMonthRange().from
+    setExpenses((prev) =>
+      prev
+        .map((e) => (e.id === id ? saved : e))
+        .filter((e) => e.spent_on >= from) // if you moved its date to an older month, it leaves this list
+        .sort(newestFirst)
+    )
+    setEditing(null)
     setSheet(null)
   }
 
@@ -106,16 +128,20 @@ export default function App() {
               loading={loading}
               budget={budget}
               onBudgetChange={changeBudget}
+              onEdit={startEdit}
               onDelete={deleteExpense}
               onSave={addExpense}
+              editing={editing}
+              onUpdate={changeExpense}
+              onCancelEdit={() => setEditing(null)}
               showAdd={sheet === 'expense'}
               onCloseAdd={() => setSheet(null)}
               onSeeAll={() => navigate('history')}
             />
           )}
-          {page === 'history' && <History onDelete={deleteExpense} />}
+          {page === 'history' && <History onEdit={startEdit} onDelete={deleteExpense} />}
           {page === 'stats' && <Stats budget={budget} />}
-          {page === 'food' && <Food showAdd={sheet === 'meal'} onCloseAdd={() => setSheet(null)} />}
+          {page === 'food' && <Food showAdd={sheet === 'meal'} onOpenAdd={() => setSheet('meal')} onCloseAdd={() => setSheet(null)} />}
           </div>
         </main>
       </div>

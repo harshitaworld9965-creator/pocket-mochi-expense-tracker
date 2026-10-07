@@ -39,6 +39,14 @@ export function currentMonthRange() {
   return monthRange(d.getFullYear(), d.getMonth())
 }
 
+export function lastMonth() {
+  const now = new Date()
+  const d = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  return { y: d.getFullYear(), m: d.getMonth() }
+}
+
+export const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate()
+
 export function daysLeftInMonth() {
   const d = new Date()
   const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
