@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import History from './pages/History'
 import Stats from './pages/Stats'
 import Food from './pages/Food'
+import useTheme from './useTheme'
 
 const newestFirst = (a, b) =>
   b.spent_on.localeCompare(a.spent_on) || b.created_at.localeCompare(a.created_at)
@@ -20,6 +21,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [sheet, setSheet] = useState(null) // which phone form is open: null, 'expense' or 'meal'
   const [editing, setEditing] = useState(null) // the expense being edited, or null
+  const [theme, toggleTheme] = useTheme()
 
   useEffect(() => {
     const { from, to } = currentMonthRange()
@@ -110,7 +112,7 @@ export default function App() {
       <div className="blob blob-b" />
 
       <div className="layout">
-        <Sidebar page={page} onNavigate={navigate} expenses={expenses} budgetPct={budgetPct} />
+        <Sidebar page={page} onNavigate={navigate} expenses={expenses} budgetPct={budgetPct} theme={theme} onToggleTheme={toggleTheme} />
 
         <main className="main">
           {error && (
@@ -128,6 +130,8 @@ export default function App() {
               loading={loading}
               budget={budget}
               onBudgetChange={changeBudget}
+              theme={theme}
+              onToggleTheme={toggleTheme}
               onEdit={startEdit}
               onDelete={deleteExpense}
               onSave={addExpense}

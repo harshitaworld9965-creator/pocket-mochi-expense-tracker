@@ -1,8 +1,9 @@
 import Mochi, { mochiMood, mochiLine } from './Mochi'
 import { NAV_ITEMS } from './navItems'
 import { streak } from '../utils'
+import ThemeToggle from './ThemeToggle'
 
-export default function Sidebar({ page, onNavigate, expenses, budgetPct }) {
+export default function Sidebar({ page, onNavigate, expenses, budgetPct, theme, onToggleTheme }) {
   const days = streak(expenses)
   const mood = mochiMood(budgetPct)
 
@@ -30,6 +31,8 @@ export default function Sidebar({ page, onNavigate, expenses, budgetPct }) {
           </button>
         ))}
       </nav>
+
+      <ThemeToggle theme={theme} onToggle={onToggleTheme} className="side-theme" />
 
       <div className="streak">
         <p className="streak-label">streak</p>

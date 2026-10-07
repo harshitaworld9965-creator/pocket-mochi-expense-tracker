@@ -6,13 +6,14 @@ import RecentList from '../components/RecentList'
 import AddExpense from '../components/AddExpense'
 import MonthReview from '../components/MonthReview'
 import Mochi, { mochiMood, mochiLine } from '../components/Mochi'
+import ThemeToggle from '../components/ThemeToggle'
 import { greeting, sumAmounts, lastMonth, monthRange } from '../utils'
 
 const REVIEW_DAYS = 10 // show last month's review for the first 10 days of a month
 const DISMISS_KEY = 'mochi-review-dismissed'
 
 export default function Home({
-  expenses, loading, budget, onBudgetChange,
+  expenses, loading, budget, onBudgetChange, theme, onToggleTheme,
   onEdit, onDelete, onSave, editing, onUpdate, onCancelEdit,
   showAdd, onCloseAdd, onSeeAll,
 }) {
@@ -46,10 +47,13 @@ export default function Home({
           <p className="hello-small">{greeting()}</p>
           <h1>Harshita</h1>
         </div>
+        <div className="hello-right">
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} className="hello-theme" />
         <span className="avatar mochi-wrap">
           <Mochi mood={mood} />
           <span className="mochi-say mochi-say-bubble">{mochiLine(mood)}</span>
         </span>
+        </div>
       </header>
 
       {review && (

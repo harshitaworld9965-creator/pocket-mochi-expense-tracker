@@ -5,7 +5,7 @@ const props = {
     <>
       <path d="M86 52h26l-3 22H89z" fill="#ffd6e0" />
       <path d="M92 52v-4a7 7 0 0 1 14 0v4" />
-      <circle cx="99" cy="62" r="2" fill="#3d2b3f" stroke="none" />
+      <circle cx="99" cy="62" r="2" fill="currentColor" stroke="none" />
     </>
   ),
   bowl: (
@@ -38,19 +38,19 @@ export default function EmptyDoodle({ kind = 'purse', children }) {
         height="120"
         aria-hidden="true"
         fill="none"
-        stroke="#3d2b3f"
+        stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
         <g className="doodle-mochi">
-          <circle cx="30" cy="30" r="8" fill="#ffffff" />
-          <circle cx="66" cy="30" r="8" fill="#ffffff" />
+          <circle cx="30" cy="30" r="8" fill="var(--white)" />
+          <circle cx="66" cy="30" r="8" fill="var(--white)" />
           <circle cx="30" cy="30" r="3.5" fill="#ffd6e0" stroke="none" />
           <circle cx="66" cy="30" r="3.5" fill="#ffd6e0" stroke="none" />
-          <rect x="18" y="30" width="60" height="44" rx="22" fill="#ffffff" />
-          <circle cx="38" cy="52" r="2.3" fill="#3d2b3f" stroke="none" />
-          <circle cx="58" cy="52" r="2.3" fill="#3d2b3f" stroke="none" />
+          <rect x="18" y="30" width="60" height="44" rx="22" fill="var(--white)" />
+          <circle cx="38" cy="52" r="2.3" fill="currentColor" stroke="none" />
+          <circle cx="58" cy="52" r="2.3" fill="currentColor" stroke="none" />
           <circle cx="30" cy="59" r="3.2" fill="#ffd6e0" stroke="none" />
           <circle cx="66" cy="59" r="3.2" fill="#ffd6e0" stroke="none" />
           <path d="M44 61c2 1.5 6 1.5 8 0" />
