@@ -283,6 +283,13 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
 @keyframes sheet-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 
 .add-head { display: flex; align-items: center; gap: 14px; }
+.head-save {
+  margin-left: auto; height: 44px; padding: 0 18px;
+  background: var(--pink); border: var(--line); border-radius: 999px;
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: var(--display); font-size: 17px; font-weight: 600;
+}
+.head-save:disabled { opacity: .6; cursor: wait; }
 .add-head h2 { font-family: var(--display); font-size: 28px; font-weight: 700; }
 .back {
   width: 48px; height: 48px; flex-shrink: 0;
@@ -442,7 +449,7 @@ input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; marg
     box-shadow: 6px 6px 0 var(--ink);
     padding: 24px; animation: none;
   }
-  .back { display: none; }
+  .back, .head-save { display: none; }
   .add-head h2 { font-size: 22px; font-weight: 600; }
   .amount-box { background: var(--cream); box-shadow: none; padding: 14px; }
   .amount-input input { width: 150px; font-size: 40px; }

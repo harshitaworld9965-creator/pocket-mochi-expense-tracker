@@ -42,7 +42,16 @@ export default function AddMeal({ open, onClose, onSave, day }) {
           <BackIcon />
         </button>
         <h2>add food</h2>
+        <button type="submit" className="head-save" disabled={saving}>
+          {saving ? 'saving…' : 'save'}
+        </button>
       </div>
+
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
 
       <p className="logging-for">logging for {dayLabel(day)}</p>
 
@@ -96,11 +105,6 @@ export default function AddMeal({ open, onClose, onSave, day }) {
       </fieldset>
 
       <div className="save-bar">
-        {error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
         <button type="submit" className="save" disabled={saving}>
           {saving ? 'saving…' : 'save it'}
         </button>

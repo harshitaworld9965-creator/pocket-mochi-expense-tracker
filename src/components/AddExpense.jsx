@@ -41,7 +41,16 @@ export default function AddExpense({ open, onClose, onSave }) {
           <BackIcon />
         </button>
         <h2>new expense</h2>
+        <button type="submit" className="head-save" disabled={saving}>
+          {saving ? 'saving…' : 'save'}
+        </button>
       </div>
+
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
 
       <div className="amount-box sticker">
         <label htmlFor="amount">how much?</label>
@@ -107,11 +116,6 @@ export default function AddExpense({ open, onClose, onSave }) {
 
       {/* sticky bar keeps "save it" on screen even when the phone keyboard is open */}
       <div className="save-bar">
-        {error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
         <button type="submit" className="save" disabled={saving}>
           {saving ? 'saving…' : 'save it'}
         </button>
